@@ -16,12 +16,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eksad.miniproject.model.Employee;
 import com.eksad.miniproject.repository.EmployeeRepository;
+import com.eksad.miniproject.service.DataService;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/employee")
+//@RequestMapping(value = "/api/v1")
+@Api(tags = "Employee")
 public class EmployeeController {
 	@Autowired
 	EmployeeRepository employeeRepository;
+	
+	@ApiOperation(
+			value = "API to retieve all employee data",
+			notes = "Return data with JSON Format",
+			tags = "Get Data API"
+			)
 	
 	//GetAll
 	@GetMapping("getAll")
@@ -30,12 +42,23 @@ public class EmployeeController {
 		employeeRepository.findAll().forEach(result::add);
 		return result;
 	}
+	
+	@ApiOperation(
+			value = "add new employee data",
+			notes = "Return data with JSON Format",
+			tags =  "Get Data API"
+			)
 	//SAVE-INSERT-DELETE
 	@PostMapping(value= "/save")
 	public Employee save (@RequestBody Employee employee)
 	{
 		return employeeRepository.save(employee);
 	}
+	@ApiOperation(
+			value =  "Delete employee data",
+			notes =  "Delete employee data to database",
+			tags = "Data Manipulation API"
+			)
 	@DeleteMapping(value = "/delete/{id}")
 	public HashMap<String, Object> delete (@PathVariable Long id)
 	{
@@ -44,6 +67,12 @@ public class EmployeeController {
 		result.put("message","succesfully delete");
 		return result;
 	}
+	
+	@ApiOperation(
+			value =  "Update product data",
+			notes =  "Update product data to database",
+			tags = "Data Manipulation API"
+			)
 	@PutMapping(value = "/update/{id}")
 	public Employee update (@RequestBody Employee employee, @PathVariable Long id)
 	{
@@ -65,6 +94,12 @@ public class EmployeeController {
 			return null;
 		}
 	}
+	@Autowired
+	DataService dataService;
 	
+	@PostMapping("saveData")
+	public void save() {
+		dataService.saveData();
+	}
 
 }
